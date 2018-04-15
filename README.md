@@ -2,6 +2,8 @@
 
  Outputs 16 bytes at a time, cmd also reads from stdin if no arguments given.
 
+ Install with: go get github.com/james-antill/cmd/hexdump
+
  Roughly equivalent to:
 
 hexdump -e '"%08_ax:"
