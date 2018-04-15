@@ -2,7 +2,6 @@ package hexdump
 
 import (
 	"fmt"
-	"unicode"
 )
 
 const charactersPerLine = 16
@@ -35,26 +34,18 @@ func DumpLine(data []byte, addr int) string {
 		llen = len(data)
 	}
 	for i = 0; i < llen; i++ {
-		if false {
-			if unicode.IsPrint(rune(data[i])) {
-				ret += string(data[i])
-			} else {
-				ret += "."
-			}
-		} else {
-			d := data[i]
-			switch {
-			case d == ' ':
-				fallthrough
-			case d == '.':
-				fallthrough
-			case d == ',':
-				fallthrough
-			case int(d) >= 0x21 && int(d) <= 0x7E:
-				ret += string(data[i])
-			default:
-				ret += "."
-			}
+		d := data[i]
+		switch {
+		case d == ' ':
+			fallthrough
+		case d == '.':
+			fallthrough
+		case d == ',':
+			fallthrough
+		case int(d) >= 0x21 && int(d) <= 0x7E:
+			ret += string(data[i])
+		default:
+			ret += "."
 		}
 	}
 	ret += "\n"
