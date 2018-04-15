@@ -8,7 +8,7 @@ import (
 const charactersPerLine = 16
 
 // DumpLine dump upto 16 bytes of data into a line of hexdump
-func DumpLine(data []byte, addr int) (string, error) {
+func DumpLine(data []byte, addr int) string {
 	ret := fmt.Sprintf("0x%08X:", addr)
 
 	// hexdump data...
@@ -59,24 +59,20 @@ func DumpLine(data []byte, addr int) (string, error) {
 	}
 	ret += "\n"
 
-	return ret, nil
+	return ret
 }
 
 // Dump all data as lines of hexdump
-func Dump(data []byte, addr int) (string, error) {
+func Dump(data []byte, addr int) string {
 	ret := ""
 	for len(data) > 0 {
-		line, err := DumpLine(data, addr)
+		ret += DumpLine(data, addr)
 		addr += 16
-		ret += line
-		if err != nil {
-			return ret, err
-		}
 		if len(data) < 16 {
 			break
 		}
 		data = data[16:]
 	}
 
-	return ret, nil
+	return ret
 }

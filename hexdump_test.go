@@ -32,17 +32,12 @@ func TestDumpLine(t *testing.T) {
 		addr := data[i].addr
 		res := data[i].res
 
-		val, err := DumpLine([]byte{
-			off + 0, off + 1, off + 2, off + 3,
-			off + 4, off + 5, off + 6, off + 7,
-			off + 8, off + 9, off + 10, off + 11,
-			off + 12, off + 13, off + 14, off + 15}, addr)
-
-		if err != nil {
-			t.Errorf("err not nil")
-
+		data := []byte{}
+		for i := 0; i < 16; i++ {
+			data = append(data, off+byte(i))
 		}
-		if val != res {
+
+		if val := DumpLine(data, addr); val != res {
 			t.Errorf("data not equl: %v %v\n tst=<%s>\n got <%s>\n",
 				off, addr, res, val)
 		}
@@ -98,13 +93,7 @@ func TestDump256(t *testing.T) {
 			data = append(data, off+byte(i))
 		}
 
-		val, err := Dump(data, addr)
-
-		if err != nil {
-			t.Errorf("err not nil")
-
-		}
-		if val != res {
+		if val := Dump(data, addr); val != res {
 			t.Errorf("data not equl: %v %v\n tst=<%s>\n got <%s>\n",
 				off, addr, res, val)
 		}
@@ -142,13 +131,7 @@ func TestDump(t *testing.T) {
 			data = append(data, off+byte(i))
 		}
 
-		val, err := Dump(data, addr)
-
-		if err != nil {
-			t.Errorf("err not nil")
-
-		}
-		if val != res {
+		if val := Dump(data, addr); val != res {
 			t.Errorf("data not equl: %v %v %v\n tst=<%s>\n got <%s>\n",
 				off, addr, num, res, val)
 		}
