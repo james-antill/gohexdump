@@ -1,4 +1,11 @@
+[![Build Status](https://semaphoreci.com/api/v1/james-antill/gohexdump/branches/master/shields_badge.svg)](https://semaphoreci.com/james-antill/gohexdump)
+[![Go Report Card](https://goreportcard.com/badge/github.com/james-antill/gohexdump)](https://goreportcard.com/report/github.com/james-antill/gohexdump)
+
+= Hexdump =
+
  Simple hexdump cmd and API for Go.
+
+== Command ==
 
  Outputs 16 bytes at a time, cmd also reads from stdin if no arguments given.
 
