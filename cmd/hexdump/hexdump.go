@@ -9,7 +9,7 @@ import (
 	hexdump "github.com/james-antill/gohexdump"
 )
 
-func hexdumpIO(addr int, ior io.Reader, iow io.Writer) (int, error) {
+func hexdumpIO(c *hexdump.Conf, addr int, ior io.Reader, iow io.Writer) (int, error) {
 	dataStore := [16]byte{}
 	for {
 		stop := false
@@ -26,7 +26,7 @@ func hexdumpIO(addr int, ior io.Reader, iow io.Writer) (int, error) {
 		if err != nil {
 			return addr, err
 		}
-		_, err = io.WriteString(iow, hexdump.DumpLine(data, addr))
+		_, err = io.WriteString(iow, c.DumpLine(data, addr))
 		if err != nil {
 			return addr, err
 		}
@@ -40,11 +40,23 @@ func hexdumpIO(addr int, ior io.Reader, iow io.Writer) (int, error) {
 
 func main() {
 
+	utf8 := flag.Bool("utf8", false, "show utf8 for special characters")
+	nsp := flag.Bool("no-space", false, "don't show space character")
+
 	flag.Parse()
+
+	c := &hexdump.Conf{}
+
+	if *utf8 {
+		c.ShowAll()
+	}
+	if *nsp {
+		c.HidePlainSP()
+	}
 
 	addr := 0
 	if len(flag.Args()) < 1 {
-		hexdumpIO(addr, os.Stdin, os.Stdout)
+		hexdumpIO(c, addr, os.Stdin, os.Stdout)
 		return
 	}
 
@@ -54,7 +66,7 @@ func main() {
 			fmt.Printf("Open(%s): %v\n", arg, err)
 			os.Exit(1)
 		}
-		addr, err = hexdumpIO(addr, ior, os.Stdout)
+		addr, err = hexdumpIO(c, addr, ior, os.Stdout)
 		if err != nil {
 			fmt.Println("Error: ", err)
 			os.Exit(2)

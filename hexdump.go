@@ -8,6 +8,12 @@ const charactersPerLine = 16
 
 // DumpLine dump upto 16 bytes of data into a line of hexdump
 func DumpLine(data []byte, addr int) string {
+	c := Conf{}
+	return c.DumpLine(data, addr)
+}
+
+// DumpLine dump upto 16 bytes of data into a line of hexdump
+func (c *Conf) DumpLine(data []byte, addr int) string {
 	ret := fmt.Sprintf("0x%08X:", addr)
 
 	// hexdump data...
@@ -36,16 +42,75 @@ func DumpLine(data []byte, addr int) string {
 	for i = 0; i < llen; i++ {
 		d := data[i]
 		switch {
+		case d == '\r':
+			if c.utf8CR {
+				ret += utf8CR
+			} else {
+				ret += missing
+			}
+		case d == '\n':
+			if c.utf8LF {
+				ret += utf8LF
+			} else {
+				ret += missing
+			}
+		case d == '\t':
+			if c.utf8HT {
+				ret += utf8HT
+			} else {
+				ret += missing
+			}
+		case d == '\v':
+			if c.utf8VT {
+				ret += utf8VT
+			} else {
+				ret += missing
+			}
 		case d == ' ':
-			fallthrough
-		case d == '.':
-			fallthrough
-		case d == ',':
-			fallthrough
+			if !c.hideSP {
+				ret += " "
+			} else if c.utf8SP {
+				ret += utf8SP
+			} else {
+				ret += missing
+			}
+
+		case d == '\b':
+			if c.utf8BS {
+				ret += utf8BS
+			} else {
+				ret += missing
+			}
+		case int(d) == 0x7F:
+			if c.utf8DEL {
+				ret += utf8DEL
+			} else {
+				ret += missing
+			}
+		case int(d) == 0x07:
+			if c.utf8BEL {
+				ret += utf8BEL
+			} else {
+				ret += missing
+			}
+
+		case int(d) == 0x00:
+			if c.utf8NUL {
+				ret += utf8NUL
+			} else {
+				ret += missing
+			}
+		case int(d) == 0x1B:
+			if c.utf8ESC {
+				ret += utf8ESC
+			} else {
+				ret += missing
+			}
+
 		case int(d) >= 0x21 && int(d) <= 0x7E:
 			ret += string(data[i])
 		default:
-			ret += "."
+			ret += missing
 		}
 	}
 	ret += "\n"
